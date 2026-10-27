@@ -32,7 +32,7 @@ Next.js 16 (статическая сборка, `output: "export"`), React 19, 
 
 ![Подвал](docs/screens/desktop-footer.png)
 
-Мобильная версия: `docs/screens/mobile-hero.png`, `mobile-picker.png`, `mobile-prices.png`, `mobile-visit.png`, `mobile-contact.png`. Вся страница целиком: `desktop-full.png`, `tablet-full.png`, `mobile-full.png`.
+Мобильная версия: `docs/screens/mobile-hero.png`, `mobile-picker.png`, `mobile-prices.png`, `mobile-visit.png`, `mobile-contact.png`.
 
 ## Запуск
 
