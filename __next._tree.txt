@@ -1,0 +1,7 @@
+:HL["/dental-clinic-website/_next/static/chunks/43ysn89l30yj0.css","style"]
+:HL["/dental-clinic-website/_next/static/media/1e09a02957c01f17-s.p.2a_rqjkuo6grw.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/dental-clinic-website/_next/static/media/a1d533d37d70920a-s.p.0mhosx07nwlp0.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/dental-clinic-website/_next/static/media/e0d4ce99e5a5209f-s.p.1jwcpm6w583_v.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/dental-clinic-website/_next/static/media/e93dad723b20f1c1-s.p.3psl0_mnhzy2y.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+1:[["children",{"s":"__PAGE__","h":128}]]
+0:{"b":"WoWsejZTkVy2-IDHFD7wl","t":{"t":{"s":"","h":16,"c":"$Q1"}}}
