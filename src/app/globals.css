@@ -2,51 +2,301 @@
 @import "lenis/dist/lenis.css";
 
 :root {
-  --ground: #0e0f12;
-  --surface: #171920;
-  --surface-2: #20232c;
-  --ink: #f3f1ec;
-  --muted: #a7a6a3;
-  --accent: #e6c15a;
-  --accent-strong: #f0cf6e;
-  --accent-ink: #15130a;
-  color-scheme: dark;
+  --paper: #f4f5f3;
+  --sheet: #ffffff;
+  --sky: #d7eaf4;
+  --sky-deep: #bfdcec;
+  --ink: #15294b;
+  --ink-deep: #0b1830;
+  --ink-soft: #24395f;
+  --muted: #3f5070;
+  --accent: #1a74b4;
+  --accent-strong: #155f94;
+  --header-h: 4rem;
+  --margin: clamp(1.25rem, 3.3vw, 3rem);
+  --step-display: clamp(2.5rem, 0.5rem + 4.8vw, 4.5rem);
+  --step-title: clamp(1.75rem, 1.2rem + 1.2vw, 2.25rem);
+  --step-head: clamp(1.875rem, 1.4rem + 1.6vw, 2.75rem);
+  --step-lead: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+  --step-body: 1.0625rem;
+  --step-note: 0.9375rem;
+  --step-small: 0.875rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-ground: var(--ground);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
   --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
-  --color-accent-ink: var(--accent-ink);
   --font-sans: var(--font-body), system-ui, sans-serif;
-  --font-display: var(--font-display), var(--font-body), system-ui, sans-serif;
-  --spacing-18: 4.5rem;
+  --font-display: var(--font-display), Georgia, serif;
+  --spacing-margin: var(--margin);
+  --spacing-header: var(--header-h);
+  --text-display: var(--step-display);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.01em;
+  --text-head: var(--step-head);
+  --text-head--line-height: 1.08;
+  --text-head--letter-spacing: -0.01em;
+  --text-title: var(--step-title);
+  --text-title--line-height: 1.1;
+  --text-lead: var(--step-lead);
+  --text-lead--line-height: 1.45;
+  --text-body: var(--step-body);
+  --text-body--line-height: 1.55;
+  --text-note: var(--step-note);
+  --text-note--line-height: 1.5;
+  --text-small: var(--step-small);
+  --text-small--line-height: 1.45;
+  --ease-out: var(--ease-out);
+  --ease-expo: var(--ease-expo);
 }
 
-html {
-  background: var(--ground);
+@layer base {
+  html {
+    background: var(--paper);
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-size: var(--step-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+
+  ::selection {
+    background: var(--sky-deep);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
 }
 
-body {
-  background: var(--ground);
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
+@layer components {
+  .wrap {
+    padding-inline: var(--margin);
+  }
 
-::selection {
-  background: var(--accent);
-  color: var(--accent-ink);
-}
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 6px;
+  .chapter {
+    position: relative;
+  }
+
+  .reading {
+    position: relative;
+    z-index: 1;
+    background: var(--paper);
+    padding-inline: var(--margin);
+  }
+
+  .reading__inner {
+    max-width: 40rem;
+  }
+
+  .stage {
+    position: sticky;
+    top: var(--header-h);
+    height: 50svh;
+    overflow: clip;
+    background: var(--sky);
+  }
+
+  .stage__layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .stage__layer:first-child {
+    opacity: 1;
+  }
+
+  .stage__layer img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    scale: 1.1;
+  }
+
+  .stage__layer--draw {
+    display: grid;
+    place-items: center;
+    padding: 6% var(--margin) 12%;
+  }
+
+  .stage__layer--draw svg {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .stage__bar {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem var(--margin);
+    background: var(--paper);
+    font-size: var(--step-note);
+  }
+
+  @media (min-width: 1024px) {
+    .chapter {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+
+    .reading {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .stage {
+      grid-column: 2;
+      grid-row: 1;
+      height: calc(100svh - var(--header-h));
+    }
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 3rem 4rem;
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      min-height: calc(100svh - var(--header-h));
+    }
+  }
+
+  .hero__line {
+    padding-bottom: 0.06em;
+  }
+
+  .leader {
+    flex: 1 1 1.5rem;
+    min-width: 1.5rem;
+    margin-inline: 0.5rem;
+    border-bottom: 3px dotted var(--muted);
+    transform: translateY(-0.35em);
+  }
+
+  .slip {
+    background: var(--sheet);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), 97.5% 100%, 95% calc(100% - 12px), 92.5% 100%, 90% calc(100% - 12px), 87.5% 100%, 85% calc(100% - 12px), 82.5% 100%, 80% calc(100% - 12px), 77.5% 100%, 75% calc(100% - 12px), 72.5% 100%, 70% calc(100% - 12px), 67.5% 100%, 65% calc(100% - 12px), 62.5% 100%, 60% calc(100% - 12px), 57.5% 100%, 55% calc(100% - 12px), 52.5% 100%, 50% calc(100% - 12px), 47.5% 100%, 45% calc(100% - 12px), 42.5% 100%, 40% calc(100% - 12px), 37.5% 100%, 35% calc(100% - 12px), 32.5% 100%, 30% calc(100% - 12px), 27.5% 100%, 25% calc(100% - 12px), 22.5% 100%, 20% calc(100% - 12px), 17.5% 100%, 15% calc(100% - 12px), 12.5% 100%, 10% calc(100% - 12px), 7.5% 100%, 5% calc(100% - 12px), 2.5% 100%, 0 calc(100% - 12px));
+  }
+
+  .menu-sheet {
+    background: var(--sheet);
+    clip-path: polygon(0 8px, 2% 0, 4% 8px, 6% 0, 8% 8px, 10% 0, 12% 8px, 14% 0, 16% 8px, 18% 0, 20% 8px, 22% 0, 24% 8px, 26% 0, 28% 8px, 30% 0, 32% 8px, 34% 0, 36% 8px, 38% 0, 40% 8px, 42% 0, 44% 8px, 46% 0, 48% 8px, 50% 0, 52% 8px, 54% 0, 56% 8px, 58% 0, 60% 8px, 62% 0, 64% 8px, 66% 0, 68% 8px, 70% 0, 72% 8px, 74% 0, 76% 8px, 78% 0, 80% 8px, 82% 0, 84% 8px, 86% 0, 88% 8px, 90% 0, 92% 8px, 94% 0, 96% 8px, 98% 0, 100% 8px, 100% calc(100% - 8px), 98% 100%, 96% calc(100% - 8px), 94% 100%, 92% calc(100% - 8px), 90% 100%, 88% calc(100% - 8px), 86% 100%, 84% calc(100% - 8px), 82% 100%, 80% calc(100% - 8px), 78% 100%, 76% calc(100% - 8px), 74% 100%, 72% calc(100% - 8px), 70% 100%, 68% calc(100% - 8px), 66% 100%, 64% calc(100% - 8px), 62% 100%, 60% calc(100% - 8px), 58% 100%, 56% calc(100% - 8px), 54% 100%, 52% calc(100% - 8px), 50% 100%, 48% calc(100% - 8px), 46% 100%, 44% calc(100% - 8px), 42% 100%, 40% calc(100% - 8px), 38% 100%, 36% calc(100% - 8px), 34% 100%, 32% calc(100% - 8px), 30% 100%, 28% calc(100% - 8px), 26% 100%, 24% calc(100% - 8px), 22% 100%, 20% calc(100% - 8px), 18% 100%, 16% calc(100% - 8px), 14% 100%, 12% calc(100% - 8px), 10% 100%, 8% calc(100% - 8px), 6% 100%, 4% calc(100% - 8px), 2% 100%, 0 calc(100% - 8px));
+  }
+
+  .coupon {
+    position: relative;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .coupon__notch {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--paper);
+  }
+
+  .coupon__perf {
+    border-top: 5px dotted var(--paper);
+  }
+
+  @media (min-width: 1024px) {
+    .coupon__perf {
+      border-top: 0;
+      border-left: 5px dotted var(--paper);
+    }
+  }
+
+  .field {
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--ink-soft);
+    color: var(--sheet);
+    border-radius: 0;
+  }
+
+  .field::placeholder {
+    color: #c9d6e6;
+    opacity: 1;
+  }
+
+  .field:focus-visible {
+    outline: 2px solid var(--sky);
+    outline-offset: 0;
+  }
+
+  select.field {
+    appearance: none;
+    background-image: none;
+    cursor: pointer;
+  }
+
+  .press {
+    transition: transform 140ms var(--ease-out), background-color 180ms ease, color 180ms ease;
+  }
+
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  .faq-item {
+    break-inside: avoid;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
