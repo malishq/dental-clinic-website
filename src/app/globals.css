@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+:root {
+  --ground: #0e0f12;
+  --surface: #171920;
+  --surface-2: #20232c;
+  --ink: #f3f1ec;
+  --muted: #a7a6a3;
+  --accent: #e6c15a;
+  --accent-strong: #f0cf6e;
+  --accent-ink: #15130a;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-body), system-ui, sans-serif;
+  --spacing-18: 4.5rem;
+}
+
+html {
+  background: var(--ground);
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
