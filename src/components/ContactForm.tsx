@@ -1,15 +1,27 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Button } from "@/components/ui";
+import { useBooking } from "@/components/BookingContext";
+import { DOCTORS } from "@/lib/data";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 const ENDPOINT = process.env.NEXT_PUBLIC_FORM_ENDPOINT;
 
-export function ContactForm({ services = [] as string[], title = "Оставить заявку" }: { services?: string[]; title?: string }) {
+export function ContactForm() {
+  const { booking } = useBooking();
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [doctorId, setDoctorId] = useState("any");
+  const [time, setTime] = useState("");
+  const [seenStamp, setSeenStamp] = useState(0);
+
+  if (booking.stamp !== seenStamp) {
+    setSeenStamp(booking.stamp);
+    setDoctorId(booking.doctorId ?? "any");
+    setTime(booking.time ?? "");
+    setStatus("idle");
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,6 +43,8 @@ export function ContactForm({ services = [] as string[], title = "Оставит
       }
       setStatus("sent");
       form.reset();
+      setTime("");
+      setDoctorId("any");
     } catch {
       setStatus("error");
     }
@@ -38,54 +52,64 @@ export function ContactForm({ services = [] as string[], title = "Оставит
 
   if (status === "sent") {
     return (
-      <div className="rounded-3xl bg-surface p-8" role="status">
-        <p className="font-display text-2xl font-semibold text-ink">Заявка отправлена</p>
-        <p className="mt-2 text-muted">Перезвоним в ближайшее время и подтвердим время.</p>
-        <Button type="button" variant="ghost" className="mt-6" onClick={() => setStatus("idle")}>
+      <div className="flex min-h-[18rem] flex-col justify-center" role="status">
+        <p className="font-display text-title leading-tight text-paper">Заявка отправлена</p>
+        <p className="mt-3 text-body text-paper">Администратор перезвонит в течение рабочего дня, подтвердит время и ответит на вопросы.</p>
+        <button type="button" onClick={() => setStatus("idle")} className="press mt-6 self-start bg-sky px-5 py-3 text-body font-semibold text-ink hover:bg-sheet">
           Отправить ещё одну
-        </Button>
+        </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="rounded-3xl bg-surface p-6 sm:p-8">
-      <p className="font-display text-2xl font-semibold text-ink">{title}</p>
-      <div className="mt-6 grid gap-4">
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium text-ink">Имя</span>
-          <input name="name" autoComplete="name" className="h-12 rounded-2xl bg-ground px-4 text-ink outline-none ring-accent focus:ring-2" />
-          {errors.name && <span className="text-sm text-accent">{errors.name}</span>}
-        </label>
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium text-ink">Телефон</span>
-          <input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="+7" className="h-12 rounded-2xl bg-ground px-4 text-ink outline-none ring-accent focus:ring-2" />
-          {errors.phone && <span className="text-sm text-accent">{errors.phone}</span>}
-        </label>
-        {services.length > 0 && (
-          <label className="grid gap-1.5">
-            <span className="text-sm font-medium text-ink">Услуга</span>
-            <select name="service" className="h-12 rounded-2xl bg-ground px-4 text-ink outline-none ring-accent focus:ring-2">
-              {services.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </label>
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-2.5" aria-label="Форма записи на приём">
+      <label className="block">
+        <span className="sr-only">Имя</span>
+        <input name="name" autoComplete="name" placeholder="Имя" className="field" aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? "err-name" : undefined} />
+        {errors.name && (
+          <span id="err-name" className="mt-1 block text-small text-sky">
+            {errors.name}
+          </span>
         )}
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium text-ink">Комментарий</span>
-          <textarea name="comment" rows={3} className="rounded-2xl bg-ground px-4 py-3 text-ink outline-none ring-accent focus:ring-2" />
-        </label>
-      </div>
+      </label>
+      <label className="block">
+        <span className="sr-only">Телефон</span>
+        <input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="Телефон" className="field" aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "err-phone" : undefined} />
+        {errors.phone && (
+          <span id="err-phone" className="mt-1 block text-small text-sky">
+            {errors.phone}
+          </span>
+        )}
+      </label>
+      <label className="block">
+        <span className="sr-only">Врач</span>
+        <select name="doctor" value={doctorId} onChange={(e) => setDoctorId(e.target.value)} className="field">
+          <option value="any">Любой врач</option>
+          {DOCTORS.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.name}, {d.role.toLowerCase()}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="block">
+        <span className="sr-only">Удобное время</span>
+        <input name="time" value={time} onChange={(e) => setTime(e.target.value)} placeholder="Удобное время" className="field" />
+      </label>
+      <label className="block">
+        <span className="sr-only">Комментарий</span>
+        <textarea name="comment" rows={2} placeholder="Что беспокоит" className="field" />
+      </label>
       {status === "error" && (
-        <p className="mt-4 text-sm text-accent" role="alert">
+        <p className="text-small text-sky" role="alert">
           Не удалось отправить. Позвоните нам или попробуйте ещё раз.
         </p>
       )}
-      <Button type="submit" className="mt-6 w-full sm:w-auto" disabled={status === "sending"}>
-        {status === "sending" ? "Отправляем…" : "Отправить"}
-      </Button>
-      <p className="mt-3 text-xs text-muted">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+      <button type="submit" disabled={status === "sending"} className="press mt-1 min-h-14 w-full bg-ink-deep text-body font-semibold text-paper hover:bg-black disabled:opacity-60">
+        {status === "sending" ? "Отправляем…" : "Записаться"}
+      </button>
+      <p className="text-small text-sky">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
     </form>
   );
 }
